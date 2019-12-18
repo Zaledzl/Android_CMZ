@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecordDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="300dp"
+                android:layout_height="40dp"/>
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="删除"/>
+        </LinearLayout>
+
+        <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/p1_info_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/p2_info_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+        <ListView
+            android:id="@+id/detail_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/diff_setting"
+            android:background="@android:drawable/editbox_background"
+            android:hint="请输入分差(整数)"
+            android:maxLength="5"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/time_setting"
+            android:background="@android:drawable/editbox_background"
+            android:hint="请输入单局时间(整数秒为单位)"
+            android:maxLength="5"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+        android:id="@+id/p1_name_setting"
+        android:background="@android:drawable/editbox_background"
+        android:hint="请输入p1姓名"
+        android:maxLength="5"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/p1_weight_setting"
+            android:background="@android:drawable/editbox_background"
+            android:hint="请输入p1体重"
+            android:maxLength="5"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/p2_name_setting"
+            android:background="@android:drawable/editbox_background"
+            android:hint="请输入p2姓名"
+            android:maxLength="5"
+            android:inputType="textPersonName"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/p2_weight_setting"
+            android:background="@android:drawable/editbox_background"
+            android:hint="请输入p2体重"
+            android:maxLength="5"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/confirm_setting"
+            android:text="确定"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

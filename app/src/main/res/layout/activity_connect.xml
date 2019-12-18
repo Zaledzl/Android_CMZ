@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConnectActivity">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/connect_back"
+            android:text="返回"
+            android:layout_width="80dp"
+            android:layout_height="40dp" />
+        <Button
+            android:id="@+id/connect_test"
+            android:text="连接测试"
+            android:layout_width="100dp"
+            android:layout_height="40dp" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/connect_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/connect_mac"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/connect_result"
+        android:text="尚未进行测试"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/connect_heart"
+        android:text="心跳测试"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <TextView
+        android:id="@+id/connect_beat"
+        android:text="击打测试"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <LinearLayout
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:text="将此下位机配置为:(发送对码)"
+            android:layout_width="300dp"
+            android:layout_height="20dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <Button
+            android:id="@+id/p1_head_button"
+            android:text="p1头部"
+            android:layout_width="90dp"
+            android:layout_height="100dp" />
+        <Button
+            android:id="@+id/p1_body_button"
+            android:text="p1身体"
+            android:layout_width="90dp"
+            android:layout_height="100dp" />
+        <Button
+            android:id="@+id/p2_head_button"
+            android:text="p2头部"
+            android:layout_width="90dp"
+            android:layout_height="100dp" />
+        <Button
+            android:id="@+id/p2_body_button"
+            android:text="p2身体"
+            android:layout_width="90dp"
+            android:layout_height="100dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <Button
+            android:id="@+id/connect_confirm"
+            android:text="确认"
+            android:layout_width="80dp"
+            android:layout_height="40dp" />
+    </LinearLayout>
+</LinearLayout>
+</android.support.constraint.ConstraintLayout>

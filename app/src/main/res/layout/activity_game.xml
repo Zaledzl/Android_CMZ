@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/settings_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="设置" />
+
+
+            <Button
+                android:id="@+id/refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="重置本局" />
+
+            <Button
+                android:id="@+id/info_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="使用说明" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/player1_3"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <Button
+                android:id="@+id/player1_1"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="50dp"
+                android:text="+1" />
+
+            <Button
+                android:id="@+id/player1_5"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="85dp"
+                android:text="+5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/p1_head_connect"
+                android:background="@color/disconnect_red"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p1_head_heart"
+                android:background="@color/disconnect_red"
+                android:layout_marginLeft="5dp"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p1_score"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="0" />
+            <TextView
+                android:id="@+id/p1_body_heart"
+                android:background="@color/disconnect_red"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p1_body_connect"
+                android:background="@color/disconnect_red"
+                android:layout_marginLeft="5dp"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <Button
+                android:id="@+id/gameStart_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:text="开始游戏" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:text="00:00" />
+
+            <Button
+                android:id="@+id/backHome_button"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="30dp"
+                android:text="返回主页" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/p2_head_connect"
+                android:background="@color/disconnect_red"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p2_head_heart"
+                android:background="@color/disconnect_red"
+                android:layout_marginLeft="5dp"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p2_score"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="0" />
+            <TextView
+                android:id="@+id/p2_body_heart"
+                android:background="@color/disconnect_red"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+            <TextView
+                android:id="@+id/p2_body_connect"
+                android:background="@color/disconnect_red"
+                android:layout_marginLeft="5dp"
+                android:layout_width="10dp"
+                android:layout_height="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <Button
+                android:id="@+id/player2_1"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="50dp"
+                android:text="+1" />
+
+            <Button
+                android:id="@+id/player2_5"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="85dp"
+                android:text="+5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/player2_3"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/diff_view"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="分差:10" />
+
+            <TextView
+                android:id="@+id/time_view"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="时间:60s" />
+
+            <TextView
+                android:id="@+id/mode_view"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="不计时模式" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="备用" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
