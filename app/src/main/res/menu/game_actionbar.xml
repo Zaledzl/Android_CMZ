@@ -20,4 +20,9 @@
           android:checkable="false"
           android:orderInCategory="1"
           app:showAsAction="always"/>
+    <item android:id="@+id/menu_send"
+        android:title="发送灵敏度"
+        android:checkable="false"
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
 </menu>

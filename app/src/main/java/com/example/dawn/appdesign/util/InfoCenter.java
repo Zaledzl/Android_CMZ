@@ -17,6 +17,8 @@ public  class InfoCenter {
     public static final String p1_body_code = "f628f628000000050000A5A5A5A5";
     public static final String p2_head_code = "f628f628000000060000A5A5A5A5";
     public static final String p2_body_code = "f628f628000000070000A5A5A5A5";
+    public static String p1_weight_code;
+    public static String p2_weight_code;
 
 
     private static StringBuilder message = new StringBuilder();
@@ -188,9 +190,51 @@ public  class InfoCenter {
         }
         return map;
     }
-
+    public static HashMap<String,String> messageBuff(byte[] data,ApplicationRecorder app){
+        String test = bytesToString(data);
+        Log.v(TAG,"竞赛缓冲池记录:"+test);
+        HashMap<String,String> map = new HashMap<String,String>();
+        if(data.length==15){
+            return dealMessage(data,app);
+        }
+        if(data.length==20){
+            for(byte cur:data){
+                list.add(cur);
+            }
+            map.put("result","不处理");
+            map.put("reason","部分信息");
+            return map;
+        }
+        if(data.length==6){
+            byte[] rowData = new byte[26];
+            for(int i=0;i<20;i++){
+                rowData[i]=list.get(i);
+            }
+            for(int j=0;j<6;j++){
+                rowData[20+j]=data[j];
+            }
+            list.clear();
+            return dealMessage(rowData,app);
+        }
+        if(data.length==18){
+            byte[] rowData = new byte[58];
+            for(int i=0;i<40;i++){
+                rowData[i]=list.get(i);
+            }
+            for(int j=0;j<18;j++){
+                rowData[40+j]=data[j];
+            }
+            list.clear();
+            return dealMessage(rowData,app);
+        }
+        map.put("result","不处理");
+        map.put("reason","异常格式");
+        list.clear();
+        return map;
+    }
     public static HashMap<String,String> dealMessage(byte[] rawData,ApplicationRecorder app){
         HashMap<String,String> map = new HashMap<>(); //返回结果
+        Log.v(TAG,"dealMessage收到信息:"+bytesToString(rawData)+"总长"+rawData.length+"个字节");
         if(rawData.length!=26&&rawData.length!=58&&rawData.length!=15){
             map.put("result","不处理");
             map.put("reason","异常格式");
@@ -214,7 +258,7 @@ public  class InfoCenter {
             }else{ //不然只可能是8003
                 flag=2;
                 for(int i=0;i<8;i++){
-                    mac8Address[i]=para[42+i];
+                    mac8Address[i]=para[44+i];
                 }
                 beater[0]=para[26];
                 beater[1]=para[27];
@@ -227,10 +271,10 @@ public  class InfoCenter {
         String mac8AddressString = flag>=1?bytesToString(mac8Address):null;
         String beaterString = flag==2?bytesToString(beater):null;
         //假设p1对应卡存储数据1111  p2对应卡存储数据2222  自己击中自己不做处理
-        if(
-                (beaterString.equals("1111")&&(mac8AddressString.equals(app.getP1_8_body())||mac8AddressString.equals(app.getP1_8_head())))
+        if(     flag==2 &&
+                ((beaterString.equals("1111")&&(mac8AddressString.equals(app.getP1_8_body())||mac8AddressString.equals(app.getP1_8_head())))
                 ||
-                (beaterString.equals("2222")&&(mac8AddressString.equals(app.getP2_8_body())||mac8AddressString.equals(app.getP2_8_head())))
+                (beaterString.equals("2222")&&(mac8AddressString.equals(app.getP2_8_body())||mac8AddressString.equals(app.getP2_8_head()))))
                 ){
             map.put("result","不处理");
             map.put("reason","误触");

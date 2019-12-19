@@ -261,11 +261,16 @@ public class GameActivity extends Activity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
+        mBluetoothLeService1.disconnect();
+        mBluetoothLeService2.disconnect();
+        mBluetoothLeService3.disconnect();
+        mBluetoothLeService4.disconnect();
     }
     @Override
     public void onBackPressed(){
         Intent it = new Intent(GameActivity.this,MainActivity.class);
         startActivity(it);
+        this.finish(); //销毁当前Activity
     }
     @Override
     protected void onDestroy() {
@@ -400,6 +405,9 @@ public class GameActivity extends Activity {
                         p2_body_connect.setBackgroundColor(Color.parseColor("#FF0000"));
                         mBluetoothLeService4.connect(app.getP2_body());
                         break;
+                    default:
+                        //此时可能LeTestService还未销毁 其广播忽略即可
+                        break;
                 }
 //                mConnected = false;
 //                updateConnectionState(R.string.disconnected);
@@ -448,7 +456,7 @@ public class GameActivity extends Activity {
 //                 for(byte byteChar : data)
 //                      stringBuilder.append(String.format("%02X ", byteChar));
 //                Log.v("log",stringBuilder.toString());
-                HashMap<String,String> map = InfoCenter.dealMessage(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA),app);
+                HashMap<String,String> map = InfoCenter.messageBuff(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA),app);
                 dealMessage(map);
             }
 //            }else if (BluetoothLeService.ACTION_WRITE_SUCCESSFUL.equals(action)) {
@@ -491,7 +499,7 @@ public class GameActivity extends Activity {
                 Log.v(TAG,"GameActivity出现了不该出现的对码");
                 break;
             case "p1_head":
-                if(action.equals("受击码")) {
+                if(action.equals("打击码")) {
                     p2_score += 5;
                     sb.append("p1+5,");
                     judge_win();
@@ -500,7 +508,7 @@ public class GameActivity extends Activity {
                 }
                 break;
             case "p1_body":
-                if (action.equals("受击码")) {
+                if (action.equals("打击码")) {
                     p2_score+=3;
                     sb.append("p2+5,");
                     judge_win();
@@ -509,7 +517,7 @@ public class GameActivity extends Activity {
                 }
                 break;
             case "p2_head":
-                if (action.equals("受击码")) {
+                if (action.equals("打击码")) {
                     p1_score+=5;
                     sb.append("p1+5,");
                     judge_win();
@@ -517,7 +525,7 @@ public class GameActivity extends Activity {
                     TU3.dealColorView(p2_head_heart,1000);
                 }
             case "p2_body":
-                if (action.equals("受击码")) {
+                if (action.equals("打击码")) {
                     p1_score+=3;
                     sb.append("p1+3,");
                     judge_win();
@@ -553,6 +561,9 @@ public class GameActivity extends Activity {
         switch(item.getItemId()) {
             case R.id.menu_connect:
                 connectConfirm();
+                return true;
+            case R.id.menu_send:
+//                sendWeight();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -597,6 +608,27 @@ public class GameActivity extends Activity {
         });
         builder.show();
     }
+
+//    private void sendWeight(){
+////        byte[] sendBuf = stringToBytes(para);
+////        mBluetoothLeTestService.writeData(sendBuf);
+//        if(mBluetoothLeService1!=null){
+//            byte[] sendBuf = stringToBytes();
+//            mBluetoothLeService1.writeData(sendBuf);
+//        }
+//        if(mBluetoothLeService2!=null){
+//            byte[] sendBuf = stringToBytes();
+//            mBluetoothLeService2.writeData(sendBuf);
+//        }
+//        if(mBluetoothLeService3!=null){
+//            byte[] sendBuf = stringToBytes();
+//            mBluetoothLeService3.writeData(sendBuf);
+//        }
+//        if(mBluetoothLeService4!=null){
+//            byte[] sendBuf = stringToBytes();
+//            mBluetoothLeService4.writeData(sendBuf);
+//        }
+//    }
 
     private void loadSettings(){
         app=(ApplicationRecorder)getApplication();

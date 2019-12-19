@@ -158,6 +158,7 @@ public class ConnectActivity extends Activity {
     protected void onPause() {
         super.onPause();
         mBluetoothLeTestService.disconnect();
+        unbindService(mServiceConnection);
         mBluetoothLeTestService = null;
         unregisterReceiver(mGattUpdateReceiver);
     }
@@ -316,13 +317,21 @@ public class ConnectActivity extends Activity {
                         break;
 
                 }
+                Intent it = new Intent(ConnectActivity.this,BtBridgeActivity.class);
+
+//                unregisterReceiver(mGattUpdateReceiver); //保险起见 斩草除根
+//                mBluetoothLeTestService.disconnect();  //然而这里确实会自动调用 onPause()
+//                unbindService(mServiceConnection);
+//                mBluetoothLeTestService = null;
+
+                startActivity(it);
             }
         });
     }
     private void sendData(String para){
         byte[] sendBuf = stringToBytes(para);
         mBluetoothLeTestService.writeData(sendBuf);
-    }
+}
     private void FindView(){
         connect_name=findViewById(R.id.connect_name);
         connect_mac=findViewById(R.id.connect_mac);

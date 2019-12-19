@@ -18,11 +18,12 @@
             android:text="返回"
             android:layout_width="80dp"
             android:layout_height="40dp" />
+
         <Button
             android:id="@+id/connect_test"
-            android:text="连接测试"
             android:layout_width="100dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:text="连接" />
     </LinearLayout>
     <TextView
         android:id="@+id/connect_name"
@@ -57,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp">
         <TextView
-            android:text="将此下位机配置为:(发送对码)"
+            android:text="点击相应按钮发送对码"
             android:layout_width="300dp"
             android:layout_height="20dp" />
     </LinearLayout>

@@ -146,6 +146,7 @@ public class BluetoothLeTestService extends Service {
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
+        intent.putExtra("name","test");
         sendBroadcast(intent);
     }
 
@@ -162,7 +163,7 @@ public class BluetoothLeTestService extends Service {
                 intent.putExtra(EXTRA_DATA,data);
             }
         }
-
+        intent.putExtra("name","test");
         sendBroadcast(intent);
     }
 
