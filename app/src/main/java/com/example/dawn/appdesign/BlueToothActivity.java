@@ -78,7 +78,7 @@ public class BlueToothActivity extends Activity {
         btList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent it = new Intent(BlueToothActivity.this,ConnectActivity.class);
+                Intent it = new Intent(BlueToothActivity.this,ConnectAllActivity.class);
                 String[] params = adapter.getItem(position).split("\n");
                 it.putExtra("name",params[0]);
                 it.putExtra("mac",params[1]);

@@ -23,9 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dawn.appdesign.Service.BluetoothLeService1;
-import com.example.dawn.appdesign.Service.BluetoothLeService2;
-import com.example.dawn.appdesign.Service.BluetoothLeService3;
-import com.example.dawn.appdesign.Service.BluetoothLeService4;
 import com.example.dawn.appdesign.sample.BluetoothLeService;
 import com.example.dawn.appdesign.util.ApplicationRecorder;
 import com.example.dawn.appdesign.util.InfoCenter;
@@ -85,9 +82,6 @@ public class GameActivity extends Activity {
     private boolean mConnected3 = false;
     private boolean mConnected4 = false;
     private BluetoothLeService1 mBluetoothLeService1;
-    private BluetoothLeService2 mBluetoothLeService2;
-    private BluetoothLeService3 mBluetoothLeService3;
-    private BluetoothLeService4 mBluetoothLeService4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,20 +234,8 @@ public class GameActivity extends Activity {
         loadSettings();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLeService1 != null) {
-            final boolean result = mBluetoothLeService1.connect(app.getP1_head());
+            final boolean result = mBluetoothLeService1.connect(app.getBluetoothMac());
             Log.d(TAG, "Connect p1_head request result=" + result);
-        }
-        if (mBluetoothLeService2 != null) {
-            final boolean result = mBluetoothLeService2.connect(app.getP1_body());
-            Log.d(TAG, "Connect p1_body request result=" + result);
-        }
-        if (mBluetoothLeService3 != null) {
-            final boolean result = mBluetoothLeService3.connect(app.getP2_head());
-            Log.d(TAG, "Connect p2_head request result=" + result);
-        }
-        if (mBluetoothLeService4 != null) {
-            final boolean result = mBluetoothLeService4.connect(app.getP2_body());
-            Log.d(TAG, "Connect p2_body request result=" + result);
         }
     }
 
@@ -262,9 +244,6 @@ public class GameActivity extends Activity {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
         mBluetoothLeService1.disconnect();
-        mBluetoothLeService2.disconnect();
-        mBluetoothLeService3.disconnect();
-        mBluetoothLeService4.disconnect();
     }
     @Override
     public void onBackPressed(){
@@ -276,13 +255,7 @@ public class GameActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mServiceConnection1);
-        unbindService(mServiceConnection2);
-        unbindService(mServiceConnection3);
-        unbindService(mServiceConnection4);
         mBluetoothLeService1 = null;
-        mBluetoothLeService2 = null;
-        mBluetoothLeService3 = null;
-        mBluetoothLeService4 = null;
     }
 
 
@@ -380,96 +353,38 @@ public class GameActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            String name = intent.getStringExtra("name");
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
 
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                switch(name){
-                    case "p1_head":
-                        mConnected1=false;
-                        p1_head_connect.setBackgroundColor(Color.parseColor("#FF0000"));
-                        mBluetoothLeService1.connect(app.getP1_head());
-                        break;
-                    case "p1_body":
-                        mConnected2=false;
-                        p1_body_connect.setBackgroundColor(Color.parseColor("#FF0000"));
-                        mBluetoothLeService2.connect(app.getP1_body());
-                        break;
-                    case "p2_head":
-                        mConnected3=false;
-                        p2_head_connect.setBackgroundColor(Color.parseColor("#FF0000"));
-                        mBluetoothLeService3.connect(app.getP2_head());
-                        break;
-                    case "p2_body":
-                        mConnected4=false;
-                        p2_body_connect.setBackgroundColor(Color.parseColor("#FF0000"));
-                        mBluetoothLeService4.connect(app.getP2_body());
-                        break;
-                    default:
-                        //此时可能LeTestService还未销毁 其广播忽略即可
-                        break;
-                }
+                p1_head_connect.setBackgroundColor(Color.parseColor("#FF0000"));
+                p1_body_connect.setBackgroundColor(Color.parseColor("#FF0000"));
+                p2_head_connect.setBackgroundColor(Color.parseColor("#FF0000"));
+                p2_body_connect.setBackgroundColor(Color.parseColor("#FF0000"));
+                mBluetoothLeService1.connect(app.getBluetoothMac());
 //                mConnected = false;
 //                updateConnectionState(R.string.disconnected);
 //                mBluetoothLeService.connect(mDeviceAddress);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 //特征值找到才代表连接成功
-                switch(name){
-                    case "p1_head":
-                        p1_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
-                        mConnected1=true;
-                        break;
-                    case "p1_body":
-                        p1_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
-                        mConnected2=true;
-                        break;
-                    case "p2_head":
-                        p2_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
-                        mConnected3=true;
-                        break;
-                    case "p2_body":
-                        p2_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
-                        mConnected4=true;
-                        break;
+                if(app.getP1_8_head()!=null){
+                    p1_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
                 }
-//                mConnected = true;
-//                updateConnectionState(R.string.connected);
+                if(app.getP1_8_body()!=null){
+                    p1_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
+                }
+                if(app.getP2_8_head()!=null){
+                    p2_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
+                }
+                if(app.getP2_8_body()!=null){
+                    p2_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
+                }
             }else if (BluetoothLeService.ACTION_GATT_SERVICES_NO_DISCOVERED.equals(action)){
-                switch(name){
-                    case "p1_head":
-                        mBluetoothLeService1.connect(app.getP1_head());
-                        break;
-                    case "p1_body":
-                        mBluetoothLeService2.connect(app.getP1_body());
-                        break;
-                    case "p2_head":
-                        mBluetoothLeService3.connect(app.getP2_head());
-                        break;
-                    case "p2_body":
-                        mBluetoothLeService4.connect(app.getP2_body());
-                        break;
-                }
-//                mBluetoothLeService.connect(mDeviceAddress);
+                mBluetoothLeService1.connect(app.getBluetoothMac());
             }else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-//                final byte[] data = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
-//                final StringBuilder stringBuilder = new StringBuilder();
-//                 for(byte byteChar : data)
-//                      stringBuilder.append(String.format("%02X ", byteChar));
-//                Log.v("log",stringBuilder.toString());
-                HashMap<String,String> map = InfoCenter.messageBuff(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA),app);
+
+                HashMap<String,String> map = InfoCenter.messageBuff(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA),app,1);
                 dealMessage(map);
             }
-//            }else if (BluetoothLeService.ACTION_WRITE_SUCCESSFUL.equals(action)) {
-//                mSendBytes.setText(sendBytes + " ");
-//                if (sendDataLen>0)
-//                {
-//                    Log.v("log","Write OK,Send again");
-//                    onSendBtnClicked();
-//                }
-//                else {
-//                    Log.v("log","Write Finish");
-//                }
-//            }
 
         }
     };
@@ -485,15 +400,7 @@ public class GameActivity extends Activity {
         }
         String name = map.get("name");
         String action = map.get("action");
-//        if("通信测试设备".equals(name)){
-//            if("心跳码".equals(action)){
-//                TU.dealColorView(p1_head_heart,1000);
-//            }else if("打击码".equals(action)){
-//                p1_score+=5; //等同于调用回调函数
-//                sb.append("p1+5,");
-//                judge_win();
-//            }
-//        }
+
         switch(name){
             case "竞赛用蓝牙": //讲道理 已经对完码了这里不应该出现8000
                 Log.v(TAG,"GameActivity出现了不该出现的对码");
@@ -570,34 +477,15 @@ public class GameActivity extends Activity {
     }
 
     private void connectConfirm(){
-
-        int setDeviceMacNumber = 0;
-        if(app.getP1_head()!=null) setDeviceMacNumber++;
-        if(app.getP1_body()!=null) setDeviceMacNumber++;
-        if(app.getP2_head()!=null) setDeviceMacNumber++;
-        if(app.getP2_body()!=null) setDeviceMacNumber++;
-
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setTitle("提示");
-        builder.setMessage("检测到已设置"+setDeviceMacNumber+"个下位机地址"+"\n"+"确认连接?");
+        builder.setMessage("检测到已设置通信蓝牙地址"+"\n"+"确认连接?");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(app.getP1_head()!=null) {
+                if(app.getBluetoothMac()!=null) {
                     Intent gattServiceIntent1 = new Intent(GameActivity.this, BluetoothLeService1.class);
                     bindService(gattServiceIntent1, mServiceConnection1, BIND_AUTO_CREATE);
-                }
-                if (app.getP1_body()!=null) {
-                    Intent gattServiceIntent2 = new Intent(GameActivity.this, BluetoothLeService2.class);
-                    bindService(gattServiceIntent2, mServiceConnection2, BIND_AUTO_CREATE);
-                }
-                if (app.getP2_head()!=null) {
-                    Intent gattServiceIntent3 = new Intent(GameActivity.this, BluetoothLeService3.class);
-                    bindService(gattServiceIntent3, mServiceConnection3, BIND_AUTO_CREATE);
-                }
-                if (app.getP2_body()!=null) {
-                    Intent gattServiceIntent4 = new Intent(GameActivity.this, BluetoothLeService4.class);
-                    bindService(gattServiceIntent4, mServiceConnection4, BIND_AUTO_CREATE);
                 }
             }
         });
@@ -609,26 +497,6 @@ public class GameActivity extends Activity {
         builder.show();
     }
 
-//    private void sendWeight(){
-////        byte[] sendBuf = stringToBytes(para);
-////        mBluetoothLeTestService.writeData(sendBuf);
-//        if(mBluetoothLeService1!=null){
-//            byte[] sendBuf = stringToBytes();
-//            mBluetoothLeService1.writeData(sendBuf);
-//        }
-//        if(mBluetoothLeService2!=null){
-//            byte[] sendBuf = stringToBytes();
-//            mBluetoothLeService2.writeData(sendBuf);
-//        }
-//        if(mBluetoothLeService3!=null){
-//            byte[] sendBuf = stringToBytes();
-//            mBluetoothLeService3.writeData(sendBuf);
-//        }
-//        if(mBluetoothLeService4!=null){
-//            byte[] sendBuf = stringToBytes();
-//            mBluetoothLeService4.writeData(sendBuf);
-//        }
-//    }
 
     private void loadSettings(){
         app=(ApplicationRecorder)getApplication();
@@ -660,7 +528,7 @@ public class GameActivity extends Activity {
                 finish();
             }
             // Automatically connects to the device upon successful start-up initialization.
-            String p1HeadAddress = app.getP1_head();
+            String p1HeadAddress = app.getBluetoothMac();
             mBluetoothLeService1.connect(p1HeadAddress);
         }
 
@@ -670,63 +538,4 @@ public class GameActivity extends Activity {
         }
     };
 
-    private final ServiceConnection mServiceConnection2 = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService2 = ((BluetoothLeService2.LocalBinder) service).getService();
-            if (!mBluetoothLeService2.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Automatically connects to the device upon successful start-up initialization.
-            String p1BodyAddress = app.getP1_body();
-            mBluetoothLeService2.connect(p1BodyAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService2 = null;
-        }
-    };
-
-    private final ServiceConnection mServiceConnection3 = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService3 = ((BluetoothLeService3.LocalBinder) service).getService();
-            if (!mBluetoothLeService3.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Automatically connects to the device upon successful start-up initialization.
-            String p2HeadAddress = app.getP2_head();
-            mBluetoothLeService3.connect(p2HeadAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService3 = null;
-        }
-    };
-
-    private final ServiceConnection mServiceConnection4 = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService4 = ((BluetoothLeService4.LocalBinder) service).getService();
-            if (!mBluetoothLeService4.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Automatically connects to the device upon successful start-up initialization.
-            String p2BodyAddress = app.getP2_body();
-            mBluetoothLeService4.connect(p2BodyAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService4 = null;
-        }
-    };
 }

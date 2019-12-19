@@ -146,14 +146,12 @@ public class BluetoothLeService1 extends Service {
 
     private void broadcastUpdate(final String action) {
         final Intent intent = new Intent(action);
-        intent.putExtra("name","p1_head");
         sendBroadcast(intent);
     }
 
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
-        intent.putExtra("name","p1_head");
         if (UUID_BLE_SPP_NOTIFY.equals(characteristic.getUuid()) )
         {
             // For all other profiles, writes the data formatted in HEX.

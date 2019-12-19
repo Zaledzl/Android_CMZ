@@ -38,7 +38,6 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".BlueToothActivity" />
         <activity android:name=".GetBondDeviceActivity" />
-        <activity android:name=".ConnectActivity" />
         <activity android:name=".sample.BleSppActivity" />
 
         <service
@@ -53,25 +52,13 @@
             android:name=".Service.BluetoothLeService1"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".Service.BluetoothLeService2"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".Service.BluetoothLeService3"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".Service.BluetoothLeService4"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity
             android:name=".sample.DeviceScanActivity"
             android:label="@string/app_name" />
         <activity android:name=".BtBridgeActivity" />
         <activity android:name=".util.EmptyActivity" />
-        <activity android:name=".util.ConnectAllActivity"></activity>
+        <activity android:name="ConnectAllActivity"></activity>
     </application>
 
 </manifest>

@@ -4,10 +4,7 @@ import android.app.Application;
 
 public class ApplicationRecorder extends Application {
 
-    private static String p1_head;
-    private static String p1_body;
-    private static String p2_head;
-    private static String p2_body;
+    private static String bluetoothMac;
 
     private static String p1_8_head;
     private static String p1_8_body;
@@ -27,36 +24,12 @@ public class ApplicationRecorder extends Application {
         super.onCreate();
     }
 
-    public static void setP1_head(String p1_head) {
-        ApplicationRecorder.p1_head = p1_head;
+    public static String getBluetoothMac() {
+        return bluetoothMac;
     }
 
-    public static void setP1_body(String p1_body) {
-        ApplicationRecorder.p1_body = p1_body;
-    }
-
-    public static void setP2_head(String p2_head) {
-        ApplicationRecorder.p2_head = p2_head;
-    }
-
-    public static void setP2_body(String p2_body) {
-        ApplicationRecorder.p2_body = p2_body;
-    }
-
-    public static String getP1_head() {
-        return p1_head;
-    }
-
-    public static String getP1_body() {
-        return p1_body;
-    }
-
-    public static String getP2_head() {
-        return p2_head;
-    }
-
-    public static String getP2_body() {
-        return p2_body;
+    public static void setBluetoothMac(String bluetoothMac) {
+        ApplicationRecorder.bluetoothMac = bluetoothMac;
     }
 
     public static String getP1_8_head() {

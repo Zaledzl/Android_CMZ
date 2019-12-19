@@ -25,29 +25,34 @@ import com.example.dawn.appdesign.util.TimerUtil;
 
 import java.util.HashMap;
 
-public class ConnectActivity extends Activity {
+public class ConnectAllActivity extends Activity {
 
     private final String TAG = "connect";
 
-    private TextView connect_name;
-    private TextView connect_mac;
-    private TextView connect_result;
-    private TextView connect_heart;
-    private TextView connect_beat;
-    private Button connect_back;
-    private Button connect_test;
-    private Button p1_head_button;
-    private Button p1_body_button;
-    private Button p2_head_button;
-    private Button p2_body_button;
-    private Button connect_confirm;
+    private TextView connectAll_name;
+    private TextView connectAll_mac;
+    private Button connectAll_back;
+    private Button connectAll_test;
+    private TextView connectAll_voidCode;
+    private TextView connectAll_p1head_heart;
+    private TextView connectAll_p1body_heart;
+    private TextView connectAll_p2head_heart;
+    private TextView connectAll_p2body_heart;
+    private TextView connectAll_p1head_beat;
+    private TextView connectAll_p1body_beat;
+    private TextView connectAll_p2head_beat;
+    private TextView connectAll_p2body_beat;
+    private Button connectAll_p1head_button;
+    private Button connectAll_p1body_button;
+    private Button connectAll_p2head_button;
+    private Button connectAll_p2body_button;
+    private Button connectAll_confirm;
 
 
     String deviceName;
     String deviceMac;
     String device8Mac;
-    String flag;  //连接测试部位
-    String flagCode;    //该部位的对码
+
 
     private BluetoothLeTestService mBluetoothLeTestService;
     private boolean mConnected = false;
@@ -81,17 +86,12 @@ public class ConnectActivity extends Activity {
         FindView();//寻找组件对应实现
         ButtonSet();//按钮监听设置
 
-//        p1_head_button.setEnabled(false);
-//        p1_body_button.setEnabled(false);
-//        p2_head_button.setEnabled(false);
-//        p2_body_button.setEnabled(false);
-
         Intent it = this.getIntent();
         Bundle bd = it.getExtras();
         deviceName = (String)bd.get("name");
         deviceMac = (String)bd.get("mac");
-        connect_name.setText(deviceName);
-        connect_mac.setText(deviceMac);
+        connectAll_name.setText(deviceName);
+        connectAll_mac.setText(deviceMac);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeTestService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -124,10 +124,9 @@ public class ConnectActivity extends Activity {
 
 //                displayData(intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA));
                 byte[] data = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
-                if(flag!=null) {
-                    HashMap<String, String> map = InfoCenter.messageBuffConnect(data, flag);
-                    dealMessage(map);
-                }
+                ApplicationRecorder app = (ApplicationRecorder)getApplication();
+                HashMap<String, String> map = InfoCenter.messageBuff(data,app,0);
+                dealMessage(map);
             }
 //            }else if (BluetoothLeService.ACTION_WRITE_SUCCESSFUL.equals(action)) {
 //                mSendBytes.setText(sendBytes + " ");
@@ -172,7 +171,7 @@ public class ConnectActivity extends Activity {
     }
     @Override
     public void onBackPressed(){
-        Intent it = new Intent(ConnectActivity.this,BtBridgeActivity.class);
+        Intent it = new Intent(ConnectAllActivity.this,BtBridgeActivity.class);
         startActivity(it);
     }
     @Override
@@ -216,23 +215,51 @@ public class ConnectActivity extends Activity {
     }
 
     private void dealMessage(HashMap<String,String> map){
-        TimerUtil TU = new TimerUtil();
+        TimerUtil TU = new TimerUtil();  //也不知道一个timer顶不顶得住
         if(map.get("result").equals("不处理")){
             return;
         }
-        //因为下位机受到对码之后可能会继续发送几条空码的缘故 会出现"下位机"和"xx部位"进行波动 然后才稳定为"xx部位"
-        connect_result.setText("检测到该设备为:"+map.get("name"));
-
+        String name = map.get("name");
         String action = map.get("action");
         if(action.equals("心跳码")){
-            TU.dealTextView(connect_heart,"检测到心跳","心跳测试",1000);
-            if(map.get("8mac")!=null){
-                device8Mac = map.get("8mac");
+            switch (name){
+                case "p1_head":
+                    TU.dealColorView(connectAll_p1head_heart,1000);
+                    break;
+                case "p1_body":
+                    TU.dealColorView(connectAll_p1body_heart,1000);
+                    break;
+                case "p2_head":
+                    TU.dealColorView(connectAll_p2head_heart,1000);
+                    break;
+                case "p2_body":
+                    TU.dealColorView(connectAll_p2body_heart,1000);
+                    break;
+                default:
+                    Log.v(TAG,"检测到无法确定来源的心跳码");
+                    break;
             }
         }else if(action.equals("打击码")){
-            TU.dealTextView(connect_beat,"检测到打击","打击测试",1000);
+            switch (name){
+                case "p1_head":
+                    TU.dealColorView(connectAll_p1head_beat,1000);
+                    break;
+                case "p1_body":
+                    TU.dealColorView(connectAll_p1body_beat,1000);
+                    break;
+                case "p2_head":
+                    TU.dealColorView(connectAll_p2head_beat,1000);
+                    break;
+                case "p2_body":
+                    TU.dealColorView(connectAll_p2body_beat,1000);
+                    break;
+
+                default:
+                    Log.v(TAG,"检测到无法确定来源的击打码");
+                    break;
+            }
         }else if(action.equals("空码")){
-            sendData(flagCode);
+            TU.dealColorView(connectAll_voidCode,1000);
         }
     }
 
@@ -240,90 +267,63 @@ public class ConnectActivity extends Activity {
 
         final ApplicationRecorder app = (ApplicationRecorder) getApplication();
 
-        connect_back.setOnClickListener(new View.OnClickListener(){
+        connectAll_back.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(ConnectActivity.this,BlueToothActivity.class);
+                Intent it = new Intent(ConnectAllActivity.this,BlueToothActivity.class);
                 startActivity(it);
             }
         });
-        connect_test.setOnClickListener(new View.OnClickListener() {
+        connectAll_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mBluetoothLeTestService.connect(deviceMac);
                 ToastUtil("请继续选择开启的下位机部位");
             }
         });
-        p1_head_button.setOnClickListener(new View.OnClickListener(){
+        connectAll_p1head_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                flag = "p1_head";
-                flagCode=InfoCenter.p1_head_code;
-                sendData(flagCode);
+                sendData(InfoCenter.p1_head_code);
                 ToastUtil("已发送P1_head对码");
             }
         });
-        p1_body_button.setOnClickListener(new View.OnClickListener() {
+        connectAll_p1body_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flag = "p1_body";
-                flagCode=InfoCenter.p1_body_code;
-                sendData(flagCode);
+                sendData(InfoCenter.p1_body_code);
                 ToastUtil("已发送p1_body对码");
             }
         });
-        p2_head_button.setOnClickListener(new View.OnClickListener() {
+        connectAll_p2head_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flag = "p2_head";
-                flagCode = InfoCenter.p2_head_code;
                 sendData(InfoCenter.p2_head_code);
                 ToastUtil("已发送p2_head对码");
             }
         });
-        p2_body_button.setOnClickListener(new View.OnClickListener() {
+        connectAll_p2body_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flag = "p2_body";
-                flagCode = InfoCenter.p2_body_code;
                 sendData(InfoCenter.p2_body_code);
                 ToastUtil("已发送p2_body对码");
             }
         });
-        connect_confirm.setOnClickListener(new View.OnClickListener(){
+        connectAll_confirm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(flag==null||device8Mac==null){
-                    Toast toast = Toast.makeText(ConnectActivity.this,"请确认设置位置并收到心跳码",Toast.LENGTH_LONG);
-                    toast.show();
-                    return;
-                }
-                switch(flag){
-                    case "p1_head":
-                        app.setP1_head(deviceMac);
-                        app.setP1_8_head(device8Mac);
-                        break;
-                    case "p1_body":
-                        app.setP1_body(deviceMac);
-                        app.setP1_8_body(device8Mac);
-                        break;
-                    case "p2_head":
-                        app.setP2_head(deviceMac);
-                        app.setP2_8_head(device8Mac);
-                        break;
-                    case "p2_body":
-                        app.setP2_body(deviceMac);
-                        app.setP2_8_body(device8Mac);
-                        break;
+                int deviceNumber = 0;
+                if(app.getP1_8_head()!=null) deviceNumber++;
+                if(app.getP1_8_body()!=null) deviceNumber++;
+                if(app.getP2_8_head()!=null) deviceNumber++;
+                if(app.getP2_8_body()!=null) deviceNumber++;
 
-                }
-                Intent it = new Intent(ConnectActivity.this,BtBridgeActivity.class);
+                Toast toast = Toast.makeText(ConnectAllActivity.this,"完成"+deviceNumber+"个下位机的对码",Toast.LENGTH_SHORT);
+                toast.show();
 
-//                unregisterReceiver(mGattUpdateReceiver); //保险起见 斩草除根
-//                mBluetoothLeTestService.disconnect();  //然而这里确实会自动调用 onPause()
-//                unbindService(mServiceConnection);
-//                mBluetoothLeTestService = null;
+                app.setBluetoothMac(deviceMac);
 
+                Intent it = new Intent(ConnectAllActivity.this,BtBridgeActivity.class);
                 startActivity(it);
             }
         });
@@ -331,24 +331,30 @@ public class ConnectActivity extends Activity {
     private void sendData(String para){
         byte[] sendBuf = stringToBytes(para);
         mBluetoothLeTestService.writeData(sendBuf);
-}
+    }
     private void FindView(){
-        connect_name=findViewById(R.id.connect_name);
-        connect_mac=findViewById(R.id.connect_mac);
-        connect_result=findViewById(R.id.connect_result);
-        connect_heart=findViewById(R.id.connect_heart);
-        connect_beat=findViewById(R.id.connect_beat);
-        connect_back=findViewById(R.id.connect_back);
-        connect_test=findViewById(R.id.connect_test);
-        p1_head_button=findViewById(R.id.p1_head_button);
-        p1_body_button=findViewById(R.id.p1_body_button);
-        p2_head_button=findViewById(R.id.p2_head_button);
-        p2_body_button=findViewById(R.id.p2_body_button);
-        connect_confirm=findViewById(R.id.connect_confirm);
+        connectAll_name=findViewById(R.id.connectAll_name);
+        connectAll_mac=findViewById(R.id.connectAll_mac);
+        connectAll_back=findViewById(R.id.connectAll_back);
+        connectAll_test=findViewById(R.id.connectAll_test);
+        connectAll_voidCode=findViewById(R.id.connectAll_void_code);
+        connectAll_p1head_heart=findViewById(R.id.connectAll_p1head_heart);
+        connectAll_p1body_heart=findViewById(R.id.connectAll_p1body_heart);
+        connectAll_p2head_heart=findViewById(R.id.connectAll_p2head_heart);
+        connectAll_p2body_heart=findViewById(R.id.connectAll_p2body_heart);
+        connectAll_p1head_beat=findViewById(R.id.connectAll_p1head_beat);
+        connectAll_p1body_beat=findViewById(R.id.connectAll_p1body_beat);
+        connectAll_p2head_beat=findViewById(R.id.connectAll_p2head_beat);
+        connectAll_p2body_beat=findViewById(R.id.connectAll_p2body_beat);
+        connectAll_p1head_button=findViewById(R.id.connectAll_p1head_button);
+        connectAll_p1body_button=findViewById(R.id.connectAll_p1body_button);
+        connectAll_p2head_button=findViewById(R.id.connectAll_p2head_button);
+        connectAll_p2body_button=findViewById(R.id.connectAll_p2body_button);
+        connectAll_confirm=findViewById(R.id.connectAll_confirm);
     }
 
     private void ToastUtil(String para){
-        Toast toast=Toast.makeText(ConnectActivity.this,para,Toast.LENGTH_SHORT);
+        Toast toast=Toast.makeText(ConnectAllActivity.this,para,Toast.LENGTH_SHORT);
         toast.show();
     }
 
