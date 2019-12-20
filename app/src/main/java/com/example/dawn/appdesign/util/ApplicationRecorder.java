@@ -6,10 +6,10 @@ public class ApplicationRecorder extends Application {
 
     private static String bluetoothMac;
 
-    private static String p1_8_head;
-    private static String p1_8_body;
-    private static String p2_8_head;
-    private static String p2_8_body;
+    private static String p1_2_head;
+    private static String p1_2_body;
+    private static String p2_2_head;
+    private static String p2_2_body;
 
     private static boolean set;
     private static int diff_score = 10;
@@ -32,36 +32,36 @@ public class ApplicationRecorder extends Application {
         ApplicationRecorder.bluetoothMac = bluetoothMac;
     }
 
-    public static String getP1_8_head() {
-        return p1_8_head;
+    public static String getP1_2_head() {
+        return p1_2_head;
     }
 
-    public static void setP1_8_head(String p1_8_head) {
-        ApplicationRecorder.p1_8_head = p1_8_head;
+    public static void setP1_2_head(String p1_2_head) {
+        ApplicationRecorder.p1_2_head = p1_2_head;
     }
 
-    public static String getP1_8_body() {
-        return p1_8_body;
+    public static String getP1_2_body() {
+        return p1_2_body;
     }
 
-    public static void setP1_8_body(String p1_8_body) {
-        ApplicationRecorder.p1_8_body = p1_8_body;
+    public static void setP1_2_body(String p1_2_body) {
+        ApplicationRecorder.p1_2_body = p1_2_body;
     }
 
-    public static String getP2_8_head() {
-        return p2_8_head;
+    public static String getP2_2_head() {
+        return p2_2_head;
     }
 
-    public static void setP2_8_head(String p2_8_head) {
-        ApplicationRecorder.p2_8_head = p2_8_head;
+    public static void setP2_2_head(String p2_2_head) {
+        ApplicationRecorder.p2_2_head = p2_2_head;
     }
 
-    public static String getP2_8_body() {
-        return p2_8_body;
+    public static String getP2_2_body() {
+        return p2_2_body;
     }
 
-    public static void setP2_8_body(String p2_8_body) {
-        ApplicationRecorder.p2_8_body = p2_8_body;
+    public static void setP2_2_body(String p2_2_body) {
+        ApplicationRecorder.p2_2_body = p2_2_body;
     }
 
     public static boolean isSet() {

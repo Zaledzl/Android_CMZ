@@ -17,8 +17,6 @@ public  class InfoCenter {
     public static final String p1_body_code = "f628f628000000050000A5A5A5A5";
     public static final String p2_head_code = "f628f628000000060000A5A5A5A5";
     public static final String p2_body_code = "f628f628000000070000A5A5A5A5";
-    public static String p1_weight_code;
-    public static String p2_weight_code;
 
 
     private static StringBuilder message = new StringBuilder();
@@ -46,7 +44,7 @@ public  class InfoCenter {
         String test = bytesToString(data);
         Log.v(TAG,"缓冲池记录:"+test);
         HashMap<String,String> map = new HashMap<String,String>();
-        if(data.length==15){
+        if(data.length==15||data.length==18){  //新版通信协议仅仅只有8003(8000)超过20字节
             return mode==1?dealMessage(data,app):dealMessageConnect(data,app);
         }
         if(data.length==20){
@@ -57,27 +55,16 @@ public  class InfoCenter {
             map.put("reason","部分信息");
             return map;
         }
-        if(data.length==6){
-            byte[] rowData = new byte[26];
+        if(data.length==2){
+            byte[] rowData = new byte[22];
             for(int i=0;i<20;i++){
                 rowData[i]=list.get(i);
             }
-            for(int j=0;j<6;j++){
+            for(int j=0;j<2;j++){
                 rowData[20+j]=data[j];
             }
             list.clear();
-            return mode==1?dealMessage(data,app):dealMessageConnect(data,app);
-        }
-        if(data.length==18){
-            byte[] rowData = new byte[58];
-            for(int i=0;i<40;i++){
-                rowData[i]=list.get(i);
-            }
-            for(int j=0;j<18;j++){
-                rowData[40+j]=data[j];
-            }
-            list.clear();
-            return mode==1?dealMessage(data,app):dealMessageConnect(data,app);
+            return mode==1?dealMessage(rowData,app):dealMessageConnect(rowData,app);
         }
         map.put("result","不处理");
         map.put("reason","异常格式");
@@ -88,7 +75,7 @@ public  class InfoCenter {
         HashMap<String,String> map = new HashMap<>(); //返回结果
         String test = bytesToString(rawData);
         Log.v(TAG,"接受信息(完整)"+test);
-        if(rawData.length!=26&&rawData.length!=58&&rawData.length!=15){ //实际上经过缓存处理这里多余了
+        if(rawData.length!=15&&rawData.length!=18&&rawData.length!=22){ //实际上经过缓存处理这里多余了
             map.put("result","不处理");
             map.put("reason","异常格式");
             return map;
@@ -96,36 +83,45 @@ public  class InfoCenter {
             map.put("result","正常处理");
         }
         byte[] para = deleteNoMeaning(rawData); //去掉最后四个无用字节
-        int flag = 0; //0--mac8Address和beater都无效  1--mac8Address有效beater无效  2--两者都有效
+        int flag = 0; //0--mac2Address和beater都无效  1--mac2Address有效beater无效  2--两者都有效
         byte[] commend = new byte[2];  //指令两个字节
-        byte[] mac8Address = new byte[8];  //mac地址8个字节
+        byte[] mac2Address = new byte[2];  //mac地址2个字节
         byte[] beater = new byte[2];    //mifare卡存储的写死的数据仅仅取两个字节用以判断击打方
-        if(para.length>=20) {
+        byte[] power = new byte[2];   //剩余电量  3200 - 4200
+        if(para.length>=14) {
             flag=1;
-            if (para.length==22) { //处理后的心跳码都是22(26-4)字节
-                for(int i=0;i<8;i++){
-                    mac8Address[i]=para[12+i];
+            if (para.length==14) { //处理后的心跳码都是14字节
+                for(int i=0;i<2;i++){
+                    mac2Address[i]=para[12+i];
+                }
+                for(int j=0;j<2;j++){
+                    power[j]=para[10+j];
                 }
             }else{ //不然只可能是8003
                 flag=2;
-                for(int i=0;i<8;i++){
-                    mac8Address[i]=para[44+i];
+                for(int i=0;i<2;i++){
+                    mac2Address[i]=para[16+i];
                 }
-                beater[0]=para[26];
-                beater[1]=para[27];
+                beater[0]=para[10];
+                beater[1]=para[11];
             }
         }
         commend[0] = para[6];
         commend[1] = para[7];
         String message = bytesToString(para);
         Log.v(TAG,"收到信息 "+message);
+        if(flag==1){
+            int powerInt = byteArrayToInt(power);
+            if(powerInt<=3400)
+                map.put("电量","电池电量低");
+        }
         String commendString = bytesToString(commend);
-        String mac8AddressString = flag>=1?bytesToString(mac8Address):null;
+        String mac2AddressString = flag>=1?bytesToString(mac2Address):null;
         String beaterString = flag==2?bytesToString(beater):null;
         //假设p1对应卡存储数据1111  p2对应卡存储数据2222  自己击中自己不做处理  ConnectActivity不需要误触处理
         switch(commendString){
             case "8000":  //空码不稳定性太大 先不获取8Mac
-                map.put("name","竞赛用蓝牙下位机");
+                map.put("name","竞赛用蓝牙");
                 map.put("action","空码");
                 break;
             case "8001":
@@ -136,13 +132,13 @@ public  class InfoCenter {
                 break;
             case "8003":
                 //受击码
-                if(app.getP1_8_head()!=null&&mac8AddressString.equals(app.getP1_8_head())){
+                if(app.getP1_2_head()!=null&&mac2AddressString.equals(app.getP1_2_head())){
                     map.put("name","p1_head");
-                }else if(app.getP1_8_head()!=null&&mac8AddressString.equals(app.getP1_8_head())){
+                }else if(app.getP1_2_head()!=null&&mac2AddressString.equals(app.getP1_2_body())){
                     map.put("name","p1_body");
-                }else if(app.getP2_8_head()!=null&&mac8AddressString.equals(app.getP2_8_head())){
+                }else if(app.getP2_2_head()!=null&&mac2AddressString.equals(app.getP2_2_head())){
                     map.put("name","p2_head");
-                }else if(app.getP2_8_body()!=null&&mac8AddressString.equals(app.getP2_8_body())){
+                }else if(app.getP2_2_body()!=null&&mac2AddressString.equals(app.getP2_2_body())){
                     map.put("name","p2_body");
                 }else{
                     map.put("name","记录无对应设备");
@@ -152,23 +148,23 @@ public  class InfoCenter {
             case "8004":
                 map.put("name","p1_head");
                 map.put("action","心跳码");
-//                map.put("8mac",mac8AddressString);
-                app.setP1_8_head(mac8AddressString);
+//                map.put("8mac",mac2AddressString);
+                app.setP1_2_head(mac2AddressString);
                 break;
             case "8005":
                 map.put("name","p1_body");
                 map.put("action","心跳码");
-                app.setP1_8_body(mac8AddressString);
+                app.setP1_2_body(mac2AddressString);
                 break;
             case "8006":
                 map.put("name","p2_head");
                 map.put("action","心跳码");
-                app.setP2_8_head(mac8AddressString);
+                app.setP2_2_head(mac2AddressString);
                 break;
             case "8007":
                 map.put("name","p2_body");
                 map.put("action","心跳码");
-                app.setP2_8_body(mac8AddressString);
+                app.setP2_2_body(mac2AddressString);
                 break;
             case "8008":
                 //p1_head 灵敏度设置结果
@@ -193,46 +189,54 @@ public  class InfoCenter {
     public static HashMap<String,String> dealMessage(byte[] rawData,ApplicationRecorder app){
         HashMap<String,String> map = new HashMap<>(); //返回结果
         Log.v(TAG,"dealMessage收到信息:"+bytesToString(rawData)+"总长"+rawData.length+"个字节");
-        if(rawData.length!=26&&rawData.length!=58&&rawData.length!=15){
+        if(rawData.length!=15&&rawData.length!=18&&rawData.length!=22){
             map.put("result","不处理");
             map.put("reason","异常格式");
             return map;
         }
         byte[] para = deleteNoMeaning(rawData); //去掉最后四个无用字节
-        String p1_8_head = app.getP1_8_head();//注意可能为空
-        String p1_8_body = app.getP1_8_body();
-        String p2_8_head = app.getP2_8_head();
-        String p2_8_body = app.getP2_8_body();
-        int flag = 0; //0--mac8Address和beater都无效  1--mac8Address有效beater无效  2--两者都有效
+        String p1_8_head = app.getP1_2_head();//注意可能为空
+        String p1_8_body = app.getP1_2_body();
+        String p2_8_head = app.getP2_2_head();
+        String p2_8_body = app.getP2_2_body();
+        int flag = 0; //0--mac2Address和beater都无效  1--mac2Address有效beater无效  2--两者都有效
         byte[] commend = new byte[2];  //指令两个字节
-        byte[] mac8Address = new byte[8];  //mac地址8个字节
+        byte[] mac2Address = new byte[2];  //mac地址8个字节
         byte[] beater = new byte[2];    //mifare卡存储的写死的数据仅仅取两个字节用以判断击打方
-        if(para.length>=20) {
+        byte[] power = new byte[2];
+        if(para.length>=14) {
             flag=1;
-            if (para.length==22) { //处理后的心跳码都是22(26-4)字节
-                for(int i=0;i<8;i++){
-                    mac8Address[i]=para[12+i];
+            if (para.length==14) { //处理后的心跳码都是14字节
+                for(int i=0;i<2;i++){
+                    mac2Address[i]=para[12+i];
+                }
+                for(int j=0;j<2;j++){
+                    power[j]=para[10+j];
                 }
             }else{ //不然只可能是8003
                 flag=2;
-                for(int i=0;i<8;i++){
-                    mac8Address[i]=para[44+i];
+                for(int i=0;i<2;i++){
+                    mac2Address[i]=para[16+i];
                 }
-                beater[0]=para[26];
-                beater[1]=para[27];
+                beater[0]=para[10];
+                beater[1]=para[11];
             }
         }
         commend[0] = para[6];
         commend[1] = para[7];
 //        String message = bytesToString(para);
+        if(flag==1){
+            if(byteArrayToInt(power)<=3400)
+                map.put("电量","电池电量低");
+        }
         String commendString = bytesToString(commend);
-        String mac8AddressString = flag>=1?bytesToString(mac8Address):null;
+        String mac2AddressString = flag>=1?bytesToString(mac2Address):null;
         String beaterString = flag==2?bytesToString(beater):null;
         //假设p1对应卡存储数据1111  p2对应卡存储数据2222  自己击中自己不做处理
         if(     flag==2 &&
-                ((beaterString.equals("1111")&&(mac8AddressString.equals(app.getP1_8_body())||mac8AddressString.equals(app.getP1_8_head())))
+                ((beaterString.equals("1111")&&(mac2AddressString.equals(app.getP1_2_body())||mac2AddressString.equals(app.getP1_2_head())))
                 ||
-                (beaterString.equals("2222")&&(mac8AddressString.equals(app.getP2_8_body())||mac8AddressString.equals(app.getP2_8_head()))))
+                (beaterString.equals("2222")&&(mac2AddressString.equals(app.getP2_2_body())||mac2AddressString.equals(app.getP2_2_head()))))
                 ){
             map.put("result","不处理");
             map.put("reason","误触");
@@ -252,13 +256,13 @@ public  class InfoCenter {
                 break;
             case "8003":
                 //受击码
-                if(mac8AddressString.equals(p1_8_head)){
+                if(mac2AddressString.equals(p1_8_head)){
                     map.put("name","p1_head");
-                }else if(mac8AddressString.equals(p1_8_body)){
+                }else if(mac2AddressString.equals(p1_8_body)){
                     map.put("name","p1_body");
-                }else if(mac8AddressString.equals(p2_8_head)){
+                }else if(mac2AddressString.equals(p2_8_head)){
                     map.put("name","p2_head");
-                }else if(mac8AddressString.equals(p2_8_body)){
+                }else if(mac2AddressString.equals(p2_8_body)){
                     map.put("name","p2_body");
                 }else{
                     map.put("name","非有效设备");
@@ -268,22 +272,18 @@ public  class InfoCenter {
             case "8004":
                 map.put("name","p1_head");
                 map.put("action","心跳码");
-                map.put("8mac",mac8AddressString);
                 break;
             case "8005":
                 map.put("name","p1_body");
                 map.put("action","心跳码");
-                map.put("8mac",mac8AddressString);
                 break;
             case "8006":
                 map.put("name","p2_head");
                 map.put("action","心跳码");
-                map.put("8mac",mac8AddressString);
                 break;
             case "8007":
                 map.put("name","p2_body");
                 map.put("action","心跳码");
-                map.put("8mac",mac8AddressString);
                 break;
             case "8008":
                 //p1_head 灵敏度设置结果
@@ -335,5 +335,15 @@ public  class InfoCenter {
             result[i]=para[i];
         }
         return result;
+    }
+
+    public static int byteArrayToInt(byte[] bytes) {
+        int value = 0;
+        // 由高位到低位
+        for (int i = 0; i < bytes.length; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (bytes[i] & 0x000000FF) << shift;// 往高位游
+        }
+        return value;
     }
 }

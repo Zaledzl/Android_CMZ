@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.example.dawn.appdesign.Service.BluetoothLeTestService;
 import com.example.dawn.appdesign.sample.BluetoothLeService;
 import com.example.dawn.appdesign.util.ApplicationRecorder;
+import com.example.dawn.appdesign.util.BeatLock;
 import com.example.dawn.appdesign.util.InfoCenter;
 import com.example.dawn.appdesign.util.TimerUtil;
 
@@ -51,8 +53,12 @@ public class ConnectAllActivity extends Activity {
 
     String deviceName;
     String deviceMac;
-    String device8Mac;
 
+    private BeatLock bl1 = new BeatLock();
+    private BeatLock bl2 = new BeatLock();
+    private BeatLock bl3 = new BeatLock();
+    private BeatLock bl4 = new BeatLock();
+    private BeatLock bl_power = new BeatLock(); //电量提示锁
 
     private BluetoothLeTestService mBluetoothLeTestService;
     private boolean mConnected = false;
@@ -81,7 +87,7 @@ public class ConnectAllActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connect);
+        setContentView(R.layout.activity_connect_all);
 
         FindView();//寻找组件对应实现
         ButtonSet();//按钮监听设置
@@ -216,12 +222,19 @@ public class ConnectAllActivity extends Activity {
 
     private void dealMessage(HashMap<String,String> map){
         TimerUtil TU = new TimerUtil();  //也不知道一个timer顶不顶得住
+        TimerUtil TU_pow = new TimerUtil();
         if(map.get("result").equals("不处理")){
             return;
         }
         String name = map.get("name");
         String action = map.get("action");
         if(action.equals("心跳码")){
+            if(map.get("电量")!=null){
+                if(!bl_power.isLock()){
+                    TU_pow.dealBeatLock(bl_power,10000); //电量提示最短间隔10S
+                    ToastUtil(name+"下位机电池电量不足20％");
+                }
+            }
             switch (name){
                 case "p1_head":
                     TU.dealColorView(connectAll_p1head_heart,1000);
@@ -242,16 +255,20 @@ public class ConnectAllActivity extends Activity {
         }else if(action.equals("打击码")){
             switch (name){
                 case "p1_head":
-                    TU.dealColorView(connectAll_p1head_beat,1000);
+                    if(!bl1.isLock())
+                        TU.dealColorView(connectAll_p1head_beat,500,bl1);
                     break;
                 case "p1_body":
-                    TU.dealColorView(connectAll_p1body_beat,1000);
+                    if(!bl2.isLock())
+                        TU.dealColorView(connectAll_p1body_beat,500,bl2);
                     break;
                 case "p2_head":
-                    TU.dealColorView(connectAll_p2head_beat,1000);
+                    if(!bl3.isLock())
+                        TU.dealColorView(connectAll_p2head_beat,500,bl3);
                     break;
                 case "p2_body":
-                    TU.dealColorView(connectAll_p2body_beat,1000);
+                    if(!bl4.isLock())
+                        TU.dealColorView(connectAll_p2body_beat,500,bl4);
                     break;
 
                 default:
@@ -259,7 +276,7 @@ public class ConnectAllActivity extends Activity {
                     break;
             }
         }else if(action.equals("空码")){
-            TU.dealColorView(connectAll_voidCode,1000);
+            TU.dealColorView(connectAll_voidCode,500);
         }
     }
 
@@ -313,15 +330,20 @@ public class ConnectAllActivity extends Activity {
             @Override
             public void onClick(View v) {
                 int deviceNumber = 0;
-                if(app.getP1_8_head()!=null) deviceNumber++;
-                if(app.getP1_8_body()!=null) deviceNumber++;
-                if(app.getP2_8_head()!=null) deviceNumber++;
-                if(app.getP2_8_body()!=null) deviceNumber++;
+                if(app.getP1_2_head()!=null) deviceNumber++;
+                if(app.getP1_2_body()!=null) deviceNumber++;
+                if(app.getP2_2_head()!=null) deviceNumber++;
+                if(app.getP2_2_body()!=null) deviceNumber++;
 
                 Toast toast = Toast.makeText(ConnectAllActivity.this,"完成"+deviceNumber+"个下位机的对码",Toast.LENGTH_SHORT);
                 toast.show();
 
                 app.setBluetoothMac(deviceMac);
+
+                SharedPreferences sharedPreferences = getSharedPreferences("GameData",MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("recentMac",deviceMac);
+                editor.commit();
 
                 Intent it = new Intent(ConnectAllActivity.this,BtBridgeActivity.class);
                 startActivity(it);

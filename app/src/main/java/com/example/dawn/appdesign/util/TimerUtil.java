@@ -30,6 +30,26 @@ public class TimerUtil {
         },time);
 
     }
+    public void dealColorView(final  TextView view,int time,final BeatLock bl){
+        view.setBackgroundColor(Color.parseColor("#00FF00"));
+        bl.setLock(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                view.setBackgroundColor(Color.parseColor("#FF0000"));
+                bl.setLock(false);
+            }
+        },time);
+    }
+    public void dealBeatLock(final BeatLock bl,int time){
+        bl.setLock(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                bl.setLock(false);
+            }
+        },time);
+    }
 
 
 }

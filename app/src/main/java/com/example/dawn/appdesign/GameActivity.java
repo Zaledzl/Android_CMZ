@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.dawn.appdesign.Service.BluetoothLeService1;
 import com.example.dawn.appdesign.sample.BluetoothLeService;
 import com.example.dawn.appdesign.util.ApplicationRecorder;
+import com.example.dawn.appdesign.util.BeatLock;
 import com.example.dawn.appdesign.util.InfoCenter;
 import com.example.dawn.appdesign.util.TimerUtil;
 
@@ -77,10 +78,12 @@ public class GameActivity extends Activity {
 
     CountDownTimer timer;
 
-    private boolean mConnected1 = false;
-    private boolean mConnected2 = false;
-    private boolean mConnected3 = false;
-    private boolean mConnected4 = false;
+    private BeatLock bl1 = new BeatLock();
+    private BeatLock bl2 = new BeatLock();
+    private BeatLock bl3 = new BeatLock();
+    private BeatLock bl4 = new BeatLock();
+    private BeatLock bl_power = new BeatLock();
+
     private BluetoothLeService1 mBluetoothLeService1;
 
     @Override
@@ -243,7 +246,8 @@ public class GameActivity extends Activity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mGattUpdateReceiver);
-        mBluetoothLeService1.disconnect();
+        if(mBluetoothLeService1!=null)
+            mBluetoothLeService1.disconnect();
     }
     @Override
     public void onBackPressed(){
@@ -366,16 +370,16 @@ public class GameActivity extends Activity {
 //                mBluetoothLeService.connect(mDeviceAddress);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 //特征值找到才代表连接成功
-                if(app.getP1_8_head()!=null){
+                if(app.getP1_2_head()!=null){
                     p1_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
                 }
-                if(app.getP1_8_body()!=null){
+                if(app.getP1_2_body()!=null){
                     p1_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
                 }
-                if(app.getP2_8_head()!=null){
+                if(app.getP2_2_head()!=null){
                     p2_head_connect.setBackgroundColor(Color.parseColor("#00FF00"));
                 }
-                if(app.getP2_8_body()!=null){
+                if(app.getP2_2_body()!=null){
                     p2_body_connect.setBackgroundColor(Color.parseColor("#00FF00"));
                 }
             }else if (BluetoothLeService.ACTION_GATT_SERVICES_NO_DISCOVERED.equals(action)){
@@ -394,50 +398,76 @@ public class GameActivity extends Activity {
         TimerUtil TU2 = new TimerUtil();
         TimerUtil TU3 = new TimerUtil();
         TimerUtil TU4 = new TimerUtil();
+        TimerUtil TU_power = new TimerUtil();
         String result = map.get("result");
         if(result==null||result.equals("不处理")){
             return;
         }
         String name = map.get("name");
         String action = map.get("action");
-
+        if(map.get("电量")!=null){
+            if(!bl_power.isLock()){
+                TU_power.dealBeatLock(bl_power,10000);
+                ToastUtil(name+"下位机电量不足20％");
+            }
+        }
         switch(name){
             case "竞赛用蓝牙": //讲道理 已经对完码了这里不应该出现8000
                 Log.v(TAG,"GameActivity出现了不该出现的对码");
                 break;
             case "p1_head":
                 if(action.equals("打击码")) {
-                    p2_score += 5;
-                    sb.append("p1+5,");
-                    judge_win();
+                    if (!bl1.isLock()) {
+                        TU1.dealBeatLock(bl1,500);
+                        p2_score += 5;
+                        sb.append("p1+5,");
+                        judge_win();
+                    }else{
+                        return;
+                    }
                 }else{
                     TU1.dealColorView(p1_head_heart,1000);
                 }
                 break;
             case "p1_body":
                 if (action.equals("打击码")) {
-                    p2_score+=3;
-                    sb.append("p2+5,");
-                    judge_win();
+                    if (!bl2.isLock()) {
+                        TU2.dealBeatLock(bl2,500);
+                        p2_score+=3;
+                        sb.append("p2+5,");
+                        judge_win();
+                    } else {
+                        return;
+                    }
                 }else{
                     TU2.dealColorView(p1_body_heart,1000);
                 }
                 break;
             case "p2_head":
                 if (action.equals("打击码")) {
-                    p1_score+=5;
-                    sb.append("p1+5,");
-                    judge_win();
+                    if (!bl3.isLock()) {
+                        TU3.dealBeatLock(bl3,500);
+                        p1_score+=5;
+                        sb.append("p1+5,");
+                        judge_win();
+                    } else {
+                        return;
+                    }
                 }else{
                     TU3.dealColorView(p2_head_heart,1000);
                 }
             case "p2_body":
                 if (action.equals("打击码")) {
-                    p1_score+=3;
-                    sb.append("p1+3,");
-                    judge_win();
+                    if (!bl4.isLock()) {
+                        TU4.dealBeatLock(bl4,500);
+                        p1_score+=3;
+                        sb.append("p1+3,");
+                        judge_win();
+                    } else {
+                        return;
+                    }
                 }else{
-                    TU4.dealColorView(p2_body_connect,1000);
+                    TU4.dealColorView(p2_body_heart,1000);
                 }
                 break;
             default:
