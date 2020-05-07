@@ -42,10 +42,15 @@ public class GameActivity extends Activity {
     private Button refresh_button;
     private Button info_button;
     private Button p1_1;
+    private Button p1_2;
     private Button p1_3;
+    private Button p1_4;
     private Button p1_5;
+
     private Button p2_1;
+    private Button p2_2;
     private Button p2_3;
+    private Button p2_4;
     private Button p2_5;
     private TextView p1_score_view;
     private TextView p2_score_view;
@@ -93,10 +98,14 @@ public class GameActivity extends Activity {
         settings_button = findViewById(R.id.settings_button);
         refresh_button = findViewById(R.id.refresh_button);
         p1_1 = findViewById(R.id.player1_1);
+        p1_2 = findViewById(R.id.player1_2);
         p1_3 = findViewById(R.id.player1_3);
+        p1_4 = findViewById(R.id.player1_4);
         p1_5 = findViewById(R.id.player1_5);
         p2_1 = findViewById(R.id.player2_1);
+        p2_2 = findViewById(R.id.player2_2);
         p2_3 = findViewById(R.id.player2_3);
+        p2_4 = findViewById(R.id.player2_4);
         p2_5 = findViewById(R.id.player2_5);
         p1_score_view = findViewById(R.id.p1_score);
         p2_score_view = findViewById(R.id.p2_score);
@@ -189,11 +198,27 @@ public class GameActivity extends Activity {
                 judge_win();
             }
         });
+        p1_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                p1_score+=2;
+                sb.append("p1+2,");
+                judge_win();
+            }
+        });
         p1_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 p1_score+=3;
                 sb.append("p1+3,");
+                judge_win();
+            }
+        });
+        p1_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                p1_score+=4;
+                sb.append("p1+4,");
                 judge_win();
             }
         });
@@ -213,11 +238,27 @@ public class GameActivity extends Activity {
                 judge_win();
             }
         });
+        p2_2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                p2_score+=2;
+                sb.append("p2+2,");
+                judge_win();
+            }
+        });
         p2_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 p2_score+=3;
                 sb.append("p2+3,");
+                judge_win();
+            }
+        });
+        p2_4.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                p2_score+=4;
+                sb.append("p2+4,");
                 judge_win();
             }
         });
@@ -258,7 +299,8 @@ public class GameActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection1);
+        if(mBluetoothLeService1!=null)
+            unbindService(mServiceConnection1);
         mBluetoothLeService1 = null;
     }
 
@@ -393,89 +435,167 @@ public class GameActivity extends Activity {
         }
     };
 
+//    private void dealMessage(HashMap<String,String> map){
+//        TimerUtil TU1 = new TimerUtil(); //以防万一多搞几个
+//        TimerUtil TU2 = new TimerUtil();
+//        TimerUtil TU3 = new TimerUtil();
+//        TimerUtil TU4 = new TimerUtil();
+//        TimerUtil TU_power = new TimerUtil();
+//        String result = map.get("result");
+//        if(result==null||result.equals("不处理")){
+//            return;
+//        }
+//        String name = map.get("name");
+//        String action = map.get("action");
+//        if(map.get("电量")!=null){
+//            if(!bl_power.isLock()){
+//                TU_power.dealBeatLock(bl_power,10000);
+//                ToastUtil(name+"下位机电量不足20％");
+//            }
+//        }
+//        switch(name){
+//            case "竞赛用蓝牙": //讲道理 已经对完码了这里不应该出现8000
+//                Log.v(TAG,"GameActivity出现了不该出现的对码");
+//                break;
+//            case "p1_head":
+//                if(action.equals("打击码")) {
+//                    if (!bl1.isLock()) {
+//                        TU1.dealBeatLock(bl1,500);
+//                        p2_score += 5;
+//                        sb.append("p1+5,");
+//                        judge_win();
+//                    }else{
+//                        return;
+//                    }
+//                }else{
+//                    TU1.dealColorView(p1_head_heart,1000);
+//                }
+//                break;
+//            case "p1_body":
+//                if (action.equals("打击码")) {
+//                    if (!bl2.isLock()) {
+//                        TU2.dealBeatLock(bl2,500);
+//                        p2_score+=3;
+//                        sb.append("p2+5,");
+//                        judge_win();
+//                    } else {
+//                        return;
+//                    }
+//                }else{
+//                    TU2.dealColorView(p1_body_heart,1000);
+//                }
+//                break;
+//            case "p2_head":
+//                if (action.equals("打击码")) {
+//                    if (!bl3.isLock()) {
+//                        TU3.dealBeatLock(bl3,500);
+//                        p1_score+=5;
+//                        sb.append("p1+5,");
+//                        judge_win();
+//                    } else {
+//                        return;
+//                    }
+//                }else{
+//                    TU3.dealColorView(p2_head_heart,1000);
+//                }
+//            case "p2_body":
+//                if (action.equals("打击码")) {
+//                    if (!bl4.isLock()) {
+//                        TU4.dealBeatLock(bl4,500);
+//                        p1_score+=3;
+//                        sb.append("p1+3,");
+//                        judge_win();
+//                    } else {
+//                        return;
+//                    }
+//                }else{
+//                    TU4.dealColorView(p2_body_heart,1000);
+//                }
+//                break;
+//            default:
+//                Log.v(TAG,"受击部位信息异常?");
+//                break;
+//        }
+//    }
     private void dealMessage(HashMap<String,String> map){
-        TimerUtil TU1 = new TimerUtil(); //以防万一多搞几个
+        TimerUtil TU1 = new TimerUtil();
         TimerUtil TU2 = new TimerUtil();
         TimerUtil TU3 = new TimerUtil();
         TimerUtil TU4 = new TimerUtil();
-        TimerUtil TU_power = new TimerUtil();
-        String result = map.get("result");
-        if(result==null||result.equals("不处理")){
+        TimerUtil TU_pow = new TimerUtil();
+        if(map.get("result").equals("不处理")){
             return;
         }
         String name = map.get("name");
         String action = map.get("action");
-        if(map.get("电量")!=null){
-            if(!bl_power.isLock()){
-                TU_power.dealBeatLock(bl_power,10000);
-                ToastUtil(name+"下位机电量不足20％");
+
+        if(action.equals("心跳码")){
+            if(map.get("电量")!=null){
+                if(!bl_power.isLock()){
+                    TU_pow.dealBeatLock(bl_power,10000); //电量提示最短间隔10S
+                    ToastUtil(name+"下位机电池电量不足20％");
+                }
             }
-        }
-        switch(name){
-            case "竞赛用蓝牙": //讲道理 已经对完码了这里不应该出现8000
-                Log.v(TAG,"GameActivity出现了不该出现的对码");
-                break;
-            case "p1_head":
-                if(action.equals("打击码")) {
-                    if (!bl1.isLock()) {
+            switch (name){
+                case "p1_head":
+                    TU1.dealColorView(p1_head_heart,1000);
+                    break;
+                case "p1_body":
+                    TU2.dealColorView(p1_body_heart,1000);
+                    break;
+                case "p2_head":
+                    TU3.dealColorView(p2_head_heart,1000);
+                    break;
+                case "p2_body":
+                    TU4.dealColorView(p2_body_heart,1000);
+                    break;
+                default:
+                    Log.v(TAG,"检测到无法确定来源的心跳码");
+                    break;
+            }
+        }else if(action.equals("打击码")){
+            switch (name){
+                case "p1_head":
+                    if(!bl1.isLock()){
                         TU1.dealBeatLock(bl1,500);
                         p2_score += 5;
-                        sb.append("p1+5,");
-                        judge_win();
-                    }else{
-                        return;
-                    }
-                }else{
-                    TU1.dealColorView(p1_head_heart,1000);
-                }
-                break;
-            case "p1_body":
-                if (action.equals("打击码")) {
-                    if (!bl2.isLock()) {
-                        TU2.dealBeatLock(bl2,500);
-                        p2_score+=3;
                         sb.append("p2+5,");
                         judge_win();
-                    } else {
-                        return;
                     }
-                }else{
-                    TU2.dealColorView(p1_body_heart,1000);
-                }
-                break;
-            case "p2_head":
-                if (action.equals("打击码")) {
-                    if (!bl3.isLock()) {
-                        TU3.dealBeatLock(bl3,500);
-                        p1_score+=5;
+                    break;
+                case "p1_body":
+                    if(!bl2.isLock()){
+                        TU2.dealBeatLock(bl2,500);
+                        p2_score += 3;
+                        sb.append("p2+3,");
+                        judge_win();
+                    }
+                    break;
+                case "p2_head":
+                    if(!bl3.isLock()){
+                        TU1.dealBeatLock(bl3,500);
+                        p1_score += 5;
                         sb.append("p1+5,");
                         judge_win();
-                    } else {
-                        return;
                     }
-                }else{
-                    TU3.dealColorView(p2_head_heart,1000);
-                }
-            case "p2_body":
-                if (action.equals("打击码")) {
-                    if (!bl4.isLock()) {
-                        TU4.dealBeatLock(bl4,500);
-                        p1_score+=3;
+                    break;
+                case "p2_body":
+                    if(!bl4.isLock()){
+                        TU1.dealBeatLock(bl4,500);
+                        p1_score += 3;
                         sb.append("p1+3,");
                         judge_win();
-                    } else {
-                        return;
                     }
-                }else{
-                    TU4.dealColorView(p2_body_heart,1000);
-                }
-                break;
-            default:
-                Log.v(TAG,"受击部位信息异常?");
-                break;
+                    break;
+
+                default:
+                    Log.v(TAG,"检测到无法确定来源的击打码");
+                    break;
+            }
+        }else if(action.equals("空码")){
+//            voidTU.dealColorView(connectAll_voidCode,500);
         }
     }
-
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);

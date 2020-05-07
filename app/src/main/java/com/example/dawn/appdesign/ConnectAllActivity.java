@@ -221,8 +221,12 @@ public class ConnectAllActivity extends Activity {
     }
 
     private void dealMessage(HashMap<String,String> map){
-        TimerUtil TU = new TimerUtil();  //也不知道一个timer顶不顶得住
+        TimerUtil TU1 = new TimerUtil();
+        TimerUtil TU2 = new TimerUtil();
+        TimerUtil TU3 = new TimerUtil();
+        TimerUtil TU4 = new TimerUtil();
         TimerUtil TU_pow = new TimerUtil();
+        TimerUtil voidTU = new TimerUtil();
         if(map.get("result").equals("不处理")){
             return;
         }
@@ -237,16 +241,16 @@ public class ConnectAllActivity extends Activity {
             }
             switch (name){
                 case "p1_head":
-                    TU.dealColorView(connectAll_p1head_heart,1000);
+                    TU1.dealColorView(connectAll_p1head_heart,1000);
                     break;
                 case "p1_body":
-                    TU.dealColorView(connectAll_p1body_heart,1000);
+                    TU2.dealColorView(connectAll_p1body_heart,1000);
                     break;
                 case "p2_head":
-                    TU.dealColorView(connectAll_p2head_heart,1000);
+                    TU3.dealColorView(connectAll_p2head_heart,1000);
                     break;
                 case "p2_body":
-                    TU.dealColorView(connectAll_p2body_heart,1000);
+                    TU4.dealColorView(connectAll_p2body_heart,1000);
                     break;
                 default:
                     Log.v(TAG,"检测到无法确定来源的心跳码");
@@ -256,19 +260,19 @@ public class ConnectAllActivity extends Activity {
             switch (name){
                 case "p1_head":
                     if(!bl1.isLock())
-                        TU.dealColorView(connectAll_p1head_beat,500,bl1);
+                        TU1.dealColorView(connectAll_p1head_beat,500,bl1);
                     break;
                 case "p1_body":
                     if(!bl2.isLock())
-                        TU.dealColorView(connectAll_p1body_beat,500,bl2);
+                        TU2.dealColorView(connectAll_p1body_beat,500,bl2);
                     break;
                 case "p2_head":
                     if(!bl3.isLock())
-                        TU.dealColorView(connectAll_p2head_beat,500,bl3);
+                        TU3.dealColorView(connectAll_p2head_beat,500,bl3);
                     break;
                 case "p2_body":
                     if(!bl4.isLock())
-                        TU.dealColorView(connectAll_p2body_beat,500,bl4);
+                        TU4.dealColorView(connectAll_p2body_beat,500,bl4);
                     break;
 
                 default:
@@ -276,7 +280,7 @@ public class ConnectAllActivity extends Activity {
                     break;
             }
         }else if(action.equals("空码")){
-            TU.dealColorView(connectAll_voidCode,500);
+            voidTU.dealColorView(connectAll_voidCode,500);
         }
     }
 

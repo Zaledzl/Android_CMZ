@@ -15,8 +15,8 @@ public class SuccessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_success);
-        tip = findViewById(R.id.SuccessTip);
-        but = findViewById(R.id.SuccessBut);
+        tip = (EditText)findViewById(R.id.SuccessTip);
+        but = (Button)findViewById(R.id.SuccessBut);
         Intent it = this.getIntent();
         Bundle bd = it.getExtras();
         tip.setText(bd.get("userid").toString()+"登陆成功");

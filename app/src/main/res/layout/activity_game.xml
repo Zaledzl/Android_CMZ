@@ -43,31 +43,46 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center">
-
+            <Button
+                android:id="@+id/player1_2"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+2" />
             <Button
                 android:id="@+id/player1_3"
-                android:layout_width="100dp"
+                android:layout_marginLeft="15dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="+3" />
+            <Button
+                android:id="@+id/player1_4"
+                android:layout_marginLeft="15dp"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+4" />
         </LinearLayout>
 
         <LinearLayout
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
             <Button
                 android:id="@+id/player1_1"
-                android:layout_width="100dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="50dp"
+                android:gravity="center"
+                android:layout_marginRight="150dp"
                 android:text="+1" />
 
             <Button
                 android:id="@+id/player1_5"
-                android:layout_width="100dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="85dp"
+                android:gravity="center"
                 android:text="+5" />
         </LinearLayout>
 
@@ -168,21 +183,23 @@
         </LinearLayout>
 
         <LinearLayout
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
             <Button
                 android:id="@+id/player2_1"
-                android:layout_width="100dp"
+                android:gravity="center"
+                android:layout_width="50dp"
+                android:layout_marginRight="150dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="50dp"
                 android:text="+1" />
 
             <Button
                 android:id="@+id/player2_5"
-                android:layout_width="100dp"
+                android:gravity="center"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="85dp"
                 android:text="+5" />
         </LinearLayout>
 
@@ -190,13 +207,27 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center">
-
+            <Button
+                android:id="@+id/player2_2"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+2" />
             <Button
                 android:id="@+id/player2_3"
-                android:layout_width="100dp"
+                android:layout_width="50dp"
+                android:layout_marginLeft="15dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="+3" />
+
+            <Button
+                android:id="@+id/player2_4"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:gravity="center"
+                android:text="+4" />
         </LinearLayout>
 
         <LinearLayout
